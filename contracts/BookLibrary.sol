@@ -8,12 +8,11 @@ contract BookLibrary is Ownable {
 
     struct BookInfo {
         string bookName;
-        address currentBorrower;
         address[] borrowers;
         uint256 numberOfCopies;
     }
     // id => Book Info
-    mapping(uint256 => BookInfo) books;
+    mapping(uint256 => BookInfo) public books;
 
     // books that have a positive number of copies
     uint256[] public availableBooks;
@@ -22,6 +21,9 @@ contract BookLibrary is Ownable {
 
     //address => id => has borrowed a book before or not
     mapping(address => mapping(uint256 => bool)) public hasBorrowedBook;
+
+    //address => id => did borrow a book or not
+    mapping(address => mapping(uint256 => bool)) public didBorrowBook;
 
     function addBook(
         string memory bookName,
@@ -42,12 +44,12 @@ contract BookLibrary is Ownable {
     function borrowBookById(uint256 id) external {
         BookInfo storage book = books[id];
         require(
-            book.currentBorrower != msg.sender,
+            !didBorrowBook[msg.sender][id],
             "Cannot borrow the same book twice"
         );
         require(book.numberOfCopies > 0, "No book copy available");
 
-        book.currentBorrower = msg.sender;
+        didBorrowBook[msg.sender][id] = true;
         book.numberOfCopies--;
 
         if (!hasBorrowedBook[msg.sender][id]) {
@@ -63,10 +65,10 @@ contract BookLibrary is Ownable {
     function returnBookById(uint256 id) external {
         BookInfo storage book = books[id];
         require(
-            book.currentBorrower == msg.sender,
-            "Not the borrower of the book"
+            didBorrowBook[msg.sender][id],
+            "Caller did not borrow this book"
         );
-        delete book.currentBorrower;
+        didBorrowBook[msg.sender][id] = false;
         book.numberOfCopies++;
 
         if (book.numberOfCopies > 0) {
@@ -83,7 +85,7 @@ contract BookLibrary is Ownable {
         listOfBooks = new BookInfo[](length);
 
         for (uint256 i; i < length; i++) {
-            listOfBooks[i] = books[i];
+            listOfBooks[i] = books[availableBooks[i]];
         }
     }
 
