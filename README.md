@@ -1,13 +1,10 @@
-# Sample Hardhat Project
+### <u>BookLibrary</u>
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
 
-Try running some of the following tasks:
 
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.js
-```
+Contract deployed in Goerli Network:
+
+[Smart Contract's address in Etherscan](https://goerli.etherscan.io/address/0xEe4a4922E6A7e90aa6106c1ED563678033476e85#code)
+
+
+

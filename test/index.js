@@ -49,6 +49,20 @@ describe("BookLibrary", function () {
       quantities = fixture.quantities;
     });
 
+    it("Book quantity should be above 0", async function () {
+      await expect(
+        bookLibrary.addBook("The Lord of the Rings", 0)
+      ).to.be.rejectedWith("Add a book with number of copies above zero");
+    });
+
+    it("Book is only added by the owner", async function () {
+      var [owner, alice] = await ethers.getSigners();
+
+      await expect(
+        bookLibrary.connect(alice).addBook("The Lord of the Rings", 2)
+      ).to.be.rejectedWith("Ownable: caller is not the owner");
+    });
+
     it("Book was added to list", async function () {
       var promises = quantities.map((val, ix) => {
         return bookLibrary.books(ix);
@@ -121,6 +135,20 @@ describe("BookLibrary", function () {
       await bookLibrary.connect(carl).borrowBookById(idCarl);
     });
 
+    it("Cannot borrow the same book twice", async () => {
+      idAlice = 5;
+      await expect(
+        bookLibrary.connect(alice).borrowBookById(idAlice)
+      ).to.be.revertedWith("Cannot borrow the same book twice");
+    });
+
+    it("No book copies available after borowing", async () => {
+      idAlice = 5;
+      await expect(
+        bookLibrary.connect(carl).borrowBookById(idAlice)
+      ).to.be.revertedWith("No book copy available");
+    });
+
     it("Book with no copies is not available", async () => {
       var filtered;
       var availableBooks = await bookLibrary.getAvailableBooks();
@@ -150,6 +178,12 @@ describe("BookLibrary", function () {
       var list = await bookLibrary.getBorrowersOfBookById(idBob);
       expect(list[0]).to.be.equal(alice.address);
       expect(list[1]).to.be.equal(bob.address);
+    });
+
+    it("Caller did not borrow this book", async () => {
+      await expect(
+        bookLibrary.connect(carl).returnBookById(idAlice)
+      ).to.be.revertedWith("Caller did not borrow this book");
     });
 
     it("Once returned, book is included in list", async () => {

@@ -1,4 +1,4 @@
-import "./Ownable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
@@ -71,7 +71,7 @@ contract BookLibrary is Ownable {
         didBorrowBook[msg.sender][id] = false;
         book.numberOfCopies++;
 
-        if (book.numberOfCopies > 0) {
+        if (book.numberOfCopies == 1) {
             _includeIdInAvailableBooks(id);
         }
     }
