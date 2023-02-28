@@ -10,6 +10,7 @@ contract BookLibrary is Ownable {
         string bookName;
         address[] borrowers;
         uint256 numberOfCopies;
+        uint256 id;
     }
     // id => Book Info
     mapping(uint256 => BookInfo) public books;
@@ -35,6 +36,7 @@ contract BookLibrary is Ownable {
         );
         books[counter].bookName = bookName;
         books[counter].numberOfCopies = numberOfCopies;
+        books[counter].id = counter;
 
         _includeIdInAvailableBooks(counter);
 

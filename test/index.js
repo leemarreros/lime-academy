@@ -149,6 +149,11 @@ describe("BookLibrary", function () {
       ).to.be.revertedWith("No book copy available");
     });
 
+    it("Book borrowed succesfully", async () => {
+      await bookLibrary.connect(alice).borrowBookById(9);
+      expect(await bookLibrary.hasBorrowedBook(alice.address, 9)).to.be.true;
+    });
+
     it("Book with no copies is not available", async () => {
       var filtered;
       var availableBooks = await bookLibrary.getAvailableBooks();

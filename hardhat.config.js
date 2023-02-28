@@ -25,8 +25,16 @@ module.exports = {
       chainId: 5,
       accounts: [process.env.PRIVATE_KEY || ""],
     },
+    mumbai: {
+      url: process.env.MUMBAI_TESNET_URL,
+      accounts: [process.env.PRIVATE_KEY || ""],
+      timeout: 0,
+      gas: "auto",
+      gasPrice: "auto",
+    },
   },
   etherscan: {
-    apiKey: "CHIRAADNUI814XIT9ST36R63UFNBNDKBDY",
+    apiKey: process.env.POLYGONSCAN_API_KEY,
+    // apiKey: "CHIRAADNUI814XIT9ST36R63UFNBNDKBDY",
   },
 };

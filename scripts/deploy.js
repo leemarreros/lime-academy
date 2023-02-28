@@ -1,6 +1,9 @@
 const hre = require("hardhat");
 
 async function main() {
+  const [deployer] = await ethers.getSigners();
+  console.log(deployer.address);
+
   const BookLibrary = await ethers.getContractFactory("BookLibrary");
   const bookLibrary = await BookLibrary.deploy();
 
